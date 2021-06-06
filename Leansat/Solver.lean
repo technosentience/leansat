@@ -105,20 +105,20 @@ def DPLL : SolverState -> Nat -> SolverState × Value
   | Value.unsat => ⟨st, Value.unsat⟩
   | Value.unknown =>
     let st := assignUnitLiterals st
-    let st := assignUnitLiterals st
+    let st := assignPureLiterals st
 
     let cur := st.assignmentHistory.back
     let next := nextVariable cur st
     let st := assign st next true
     let ⟨st, val⟩ := DPLL st fuel
 
-    if val = Value.sat then
-      ⟨st, Value.sat⟩
-    else
+    if val = Value.unsat then
       let st := revertTo cur st
       let st := assign st next false
       DPLL st fuel
-
+    else
+      ⟨st, Value.sat⟩
+      
 def maxVariableClause (c : Clause) :=
   Array.foldl max 0 $ Array.map litIndex c.disjuncts
 
