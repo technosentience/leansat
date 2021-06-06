@@ -18,6 +18,16 @@ inductive Value : Type where
   | unsat   : Value
   | unknown : Value
 
+deriving instance DecidableEq for Value
+
+def valueToString : Value -> String
+| Value.sat     => "Satisfiable"
+| Value.unsat   => "Unatisfiable"
+| Value.unknown => "Unknown"
+
+instance : ToString Value := ⟨valueToString⟩
+instance : Lean.Eval Value := Lean.instEval
+
 def vOr : Value → Value → Value
   | Value.sat,     _           => Value.sat
   | Value.unknown, Value.unsat => Value.unknown
