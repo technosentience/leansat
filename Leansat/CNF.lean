@@ -49,3 +49,7 @@ def evalClause (a : Assignment) (c : Clause) : Value :=
 def evalCNF (a : Assignment) (c : CNF) : Value :=
   let and (v : Value) (c : Clause) := vAnd v $ evalClause a c
   Array.foldl and Value.sat c.conjucts
+
+def satisfies (a: Assignment) (c: CNF) := evalCNF a c = Value.sat
+
+def satisfiable (c: CNF) := ∃ a, satisfies a c
